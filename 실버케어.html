@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>실버케어</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF8F3;
+    --surface: #FFFFFF;
+    --surface-alt: #F1EDE4;
+    --text: #22312A;
+    --text-muted: #5C6E66;
+    --accent: #0F6B5C;
+    --accent-soft: #E3F1EC;
+    --accent-contrast: #FFFFFF;
+    --border: #E2DCCF;
+    --danger: #C0392B;
+    --danger-soft: #FBE7E4;
+    --danger-contrast: #FFFFFF;
+    --shadow: 0 10px 24px rgba(34, 49, 42, 0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121917;
+      --surface: #1B2420;
+      --surface-alt: #212C27;
+      --text: #EDE8DE;
+      --text-muted: #9FAFA8;
+      --accent: #53D6B9;
+      --accent-soft: #1E3630;
+      --accent-contrast: #0B1411;
+      --border: #2E3A34;
+      --danger: #FF7A69;
+      --danger-soft: #3A1F1C;
+      --danger-contrast: #241210;
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121917;
+    --surface: #1B2420;
+    --surface-alt: #212C27;
+    --text: #EDE8DE;
+    --text-muted: #9FAFA8;
+    --accent: #53D6B9;
+    --accent-soft: #1E3630;
+    --accent-contrast: #0B1411;
+    --border: #2E3A34;
+    --danger: #FF7A69;
+    --danger-soft: #3A1F1C;
+    --danger-contrast: #241210;
+    --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  h1, h2, h3 { font-family: 'Gowun Dodum', 'Noto Sans KR', sans-serif; text-wrap: balance; margin: 0; }
+
+  #app {
+    width: 100%;
+    max-width: 460px;
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  header.topbar {
+    padding: 22px 20px 16px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  header.topbar h1 { font-size: 24px; color: var(--accent); }
+  header.topbar .date { font-size: 14px; color: var(--text-muted); }
+
+  main {
+    flex: 1;
+    padding: 4px 20px 110px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card h2 { font-size: 20px; }
+  .muted { color: var(--text-muted); font-size: 15px; }
+
+  .seg {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .seg button {
+    flex: 0 0 auto;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .seg button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  .facility {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface);
+  }
+  .facility .row1 { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .facility .name { font-size: 18px; font-weight: 700; }
+  .tag {
+    font-size: 13px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    flex: 0 0 auto;
+  }
+  .facility .info { font-size: 15px; color: var(--text-muted); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-contrast); }
+  .btn-outline { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+  .btn-ghost { background: var(--surface-alt); color: var(--text); }
+  .btn-danger { background: var(--danger); color: var(--danger-contrast); }
+  .btn-block { width: 100%; }
+  .btn-sm { padding: 8px 14px; font-size: 14px; border-radius: 10px; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  label { font-size: 15px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px; }
+  input, select, textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+    color: var(--text);
+  }
+  .field { display: flex; flex-direction: column; }
+  .field-row { display: flex; gap: 10px; }
+  .field-row .field { flex: 1; }
+
+  .emergency-btn {
+    background: var(--danger);
+    color: var(--danger-contrast);
+    border: none;
+    border-radius: 24px;
+    padding: 36px 20px;
+    font-size: 26px;
+    font-weight: 900;
+    font-family: 'Gowun Dodum', sans-serif;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 14px 30px rgba(192, 57, 43, 0.35);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .emergency-btn .sub { font-size: 15px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; }
+
+  .list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    background: var(--surface);
+  }
+  .list-item .main-txt { font-size: 17px; font-weight: 700; }
+  .list-item .sub-txt { font-size: 14px; color: var(--text-muted); }
+  .check {
+    width: 30px; height: 30px;
+    border-radius: 999px;
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex: 0 0 auto;
+    background: var(--surface);
+    color: var(--accent);
+    font-weight: 900;
+  }
+  .check.on { background: var(--accent); color: var(--accent-contrast); }
+
+  .empty { text-align: center; color: var(--text-muted); padding: 28px 10px; font-size: 15px; }
+
+  nav.bottomnav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 460px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 6px 2px calc(6px + env(safe-area-inset-bottom));
+  }
+  nav.bottomnav button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 8px 2px;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+  nav.bottomnav button .ico { font-size: 20px; }
+  nav.bottomnav button.active { color: var(--accent); background: var(--accent-soft); }
+
+  .banner {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <h1>실버케어</h1>
+    <span class="date" id="todayLabel"></span>
+  </header>
+  <main id="main"></main>
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var TABS = [
+    { key: "find", ico: "🏥", label: "찾기" },
+    { key: "book", ico: "📅", label: "예약" },
+    { key: "meds", ico: "💊", label: "복약" },
+    { key: "sos", ico: "🚨", label: "응급" },
+    { key: "records", ico: "📋", label: "기록" },
+    { key: "guardian", ico: "👨‍👩‍👧", label: "보호자" }
+  ];
+
+  // 출처: 하이닥, 114.co.kr, 대전광역시 중구보건소 공식 홈페이지(djjunggu.go.kr) 등 공개 정보 기준 (2026.11 확인)
+  // 운영시간은 사정에 따라 바뀔 수 있어 방문 전 전화 확인을 권장합니다.
+  var FACILITIES = [
+    { id: 1, type: "병원", name: "한민내과의원", hours: "평일 09:00 - 16:00 (토·일·공휴일 휴무)", phone: "042-254-3111", addr: "대전광역시 중구 대흥로 42 (대흥동)" },
+    { id: 2, type: "병원", name: "한국정형외과의원", hours: "평일 09:30 - 18:00 (점심 12:10 - 14:10)", phone: "042-535-5221", addr: "대전광역시 중구 동서대로 1261" },
+    { id: 3, type: "약국", name: "대우당약국", hours: "월~토 09:00 - 22:00, 일 09:00 - 21:00", phone: "042-255-8001", addr: "대전광역시 중구 중앙로 173" },
+    { id: 4, type: "약국", name: "대우약국", hours: "평일 08:00 - 익일 01:00, 토 09:00 - 16:30, 일 09:00 - 12:30", phone: "042-256-1058", addr: "대전광역시 중구 중앙로 125-1 (선화동)" },
+    { id: 5, type: "보건소", name: "대전광역시 중구보건소", hours: "평일 09:00 - 18:00 (점심 12:00 - 13:00, 토·일·공휴일 휴무)", phone: "042-288-8000", addr: "대전광역시 중구 산성로 63 (문화동)" }
+  ];
+
+  var TIME_SLOTS = ["09:30", "10:00", "10:30", "11:00", "14:00", "14:30", "15:00", "15:30"];
+
+  var state = { tab: "find", findFilter: "전체" };
+
+  function load(key, fallback) {
+    try {
+      var v = localStorage.getItem(key);
+      return v ? JSON.parse(v) : fallback;
+    } catch (e) { return fallback; }
+  }
+  function save(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }
+  var db = {
+    reservations: load("sc_reservations", []),
+    medications: load("sc_medications", []),
+    records: load("sc_records", []),
+    guardian: load("sc_guardian", null)
+  };
+  function persist(key) { save("sc_" + key, db[key]); }
+
+  function el(html) {
+    var t = document.createElement("template");
+    t.innerHTML = html.trim();
+    return t.content.firstChild;
+  }
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  var todayLabel = document.getElementById("todayLabel");
+  var mainEl = document.getElementById("main");
+  var navEl = document.getElementById("bottomnav");
+
+  var WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  todayLabel.textContent = (function () {
+    var d = new Date();
+    return (d.getMonth() + 1) + "월 " + d.getDate() + "일 (" + WEEKDAYS[d.getDay()] + ")";
+  })();
+
+  function renderNav() {
+    navEl.innerHTML = "";
+    TABS.forEach(function (t) {
+      var b = el('<button type="button"><span class="ico">' + t.ico + '</span><span>' + t.label + '</span></button>');
+      if (t.key === state.tab) b.classList.add("active");
+      b.addEventListener("click", function () { state.tab = t.key; renderAll(); });
+      navEl.appendChild(b);
+    });
+  }
+
+  // ---------- 1. 주변 의료시설 찾기 ----------
+  function viewFind() {
+    var wrap = el('<div></div>');
+    wrap.appendChild(el(
+      '<div class="card"><h2>주변 의료시설</h2><p class="muted">대전 중구 지역의 실제 병원·약국·보건소 정보예요. 운영시간은 바뀔 수 있어 방문 전 전화로 확인해주세요.</p></div>'
+    ));
+
+    var seg = el('<div class="seg"></div>');
+    ["전체", "병원", "약국", "보건소"].forEach(function (f) {
+      var b = el('<button type="button">' + f + '</button>');
+      if (f === state.findFilter) b.classList.add("active");
+      b.addEventListener("click", function () { state.findFilter = f; renderAll(); });
+      seg.appendChild(b);
+    });
+    wrap.appendChild(seg);
+
+    var list = FACILITIES
+      .filter(function (f) { return state.findFilter === "전체" || f.type === state.findFilter; })
+      .sort(function (a, b) { return a.name.localeCompare(b.name, "ko"); });
+
+    if (list.length === 0) {
+      wrap.appendChild(el('<div class="empty">해당하는 시설이 없어요.</div>'));
+    }
+    list.forEach(function (f) {
+      var card = el(
+        '<div class="facility">' +
+          '<div class="row1"><span class="name">' + escapeHtml(f.name) + '</span><span class="tag">' + f.type + '</span></div>' +
+          '<div class="info">📍 ' + escapeHtml(f.addr) + '</div>' +
+          '<div class="info">🕒 ' + escapeHtml(f.hours) + '</div>' +
+          '<div style="display:flex; gap:8px; margin-top:4px;">' +
+            '<a class="btn btn-outline btn-sm" href="tel:' + f.phone + '">☎ ' + f.phone + '</a>' +
+          '</div>' +
+        '</div>'
+      );
+      wrap.appendChild(card);
+    });
+    return wrap;
+  }
+
+  // ---------- 2. 병원 예약하기 ----------
+  function viewBook() {
+    var wrap = el('<div></div>');
+    var hospitals = FACILITIES.filter(function (f) { return f.type === "병원"; });
+
+    wrap.appendChild(el('<div class="card"><h2>병원 예약하기</h2><p class="muted">병원과 시간을 고르고 예약을 완료하세요.</p></div>'));
+
+    var form = el('<div class="card"></div>');
+    var hospitalField = el(
+      '<div class="field"><label>병원 선택</label><select id="bookHospital"></select></div>'
+    );
+    var select = hospitalField.querySelector("select");
+    hospitals.forEach(function (h) {
+      select.appendChild(el('<option value="' + h.id + '">' + escapeHtml(h.name) + '</option>'));
+    });
+    form.appendChild(hospitalField);
+
+    var dateField = el('<div class="field"><label>진료 날짜</label><input type="date" id="bookDate" /></div>');
+    dateField.querySelector("input").value = todayStr();
+    dateField.querySelector("input").min = todayStr();
+    form.appendChild(dateField);
+
+    var timeField = el('<div class="field"><label>진료 시간</label><div class="seg" id="bookTimeSeg"></div></div>');
+    var chosenTime = { v: TIME_SLOTS[0] };
+    var timeSeg = timeField.querySelector("#bookTimeSeg");
+    TIME_SLOTS.forEach(function (t, i) {
+      var b = el('<button type="button">' + t + '</button>');
+      if (i === 0) b.classList.add("active");
+      b.addEventListener("click", function () {
+        chosenTime.v = t;
+        timeSeg.querySelectorAll("button").forEach(function (x) { x.classList.remove("active"); });
+        b.classList.add("active");
+      });
+      timeSeg.appendChild(b);
+    });
+    form.appendChild(timeField);
+
+    var confirmBtn = el('<button type="button" class="btn btn-primary btn-block">예약 완료하기</button>');
+    confirmBtn.addEventListener("click", function () {
+      var h = hospitals.filter(function (x) { return String(x.id) === select.value; })[0];
+      var date = dateField.querySelector("input").value;
+      if (!h || !date) return;
+      db.reservations.push({ id: Date.now(), hospitalName: h.name, date: date, time: chosenTime.v });
+      persist("reservations");
+      renderAll();
+    });
+    form.appendChild(confirmBtn);
+    wrap.appendChild(form);
+
+    var listCard = el('<div class="card"><h2>내 예약 목록</h2></div>');
+    var upcoming = db.reservations.slice().sort(function (a, b) { return (a.date + a.time).localeCompare(b.date + b.time); });
+    if (upcoming.length === 0) {
+      listCard.appendChild(el('<div class="empty">아직 예약이 없어요.</div>'));
+    }
+    upcoming.forEach(function (r) {
+      var item = el(
+        '<div class="list-item">' +
+          '<div><div class="main-txt">' + escapeHtml(r.hospitalName) + '</div>' +
+          '<div class="sub-txt">' + r.date + ' · ' + r.time + '</div></div>' +
+        '</div>'
+      );
+      var cancel = el('<button type="button" class="btn btn-ghost btn-sm">취소</button>');
+      cancel.addEventListener("click", function () {
+        db.reservations = db.reservations.filter(function (x) { return x.id !== r.id; });
+        persist("reservations");
+        renderAll();
+      });
+      item.appendChild(cancel);
+      listCard.appendChild(item);
+    });
+    wrap.appendChild(listCard);
+    return wrap;
+  }
+
+  // ---------- 3. 복약 알림 ----------
+  function viewMeds() {
+    var wrap = el('<div></div>');
+    wrap.appendChild(el('<div class="card"><h2>복약 알림</h2><p class="muted">약 이름과 시간을 등록하면 잊지 않고 챙길 수 있어요.</p></div>'));
+
+    var form = el('<div class="card"></div>');
+    form.appendChild(el(
+      '<div class="field-row">' +
+        '<div class="field"><label>약 이름</label><input type="text" id="medName" placeholder="예: 혈압약" /></div>' +
+        '<div class="field"><label>복용 시간</label><input type="time" id="medTime" value="08:00" /></div>' +
+      '</div>'
+    ));
+    var addBtn = el('<button type="button" class="btn btn-primary btn-block">복약 알림 추가</button>');
+    addBtn.addEventListener("click", function () {
+      var name = form.querySelector("#medName").value.trim();
+      var time = form.querySelector("#medTime").value;
+      if (!name || !time) return;
+      db.medications.push({ id: Date.now(), name: name, time: time, taken: false });
+      persist("medications");
+      renderAll();
+    });
+    form.appendChild(addBtn);
+    wrap.appendChild(form);
+
+    var listCard = el('<div class="card"><h2>오늘의 복약</h2></div>');
+    var meds = db.medications.slice().sort(function (a, b) { return a.time.localeCompare(b.time); });
+    if (meds.length === 0) {
+      listCard.appendChild(el('<div class="empty">등록된 약이 없어요.</div>'));
+    }
+    meds.forEach(function (m) {
+      var item = el(
+        '<div class="list-item">' +
+          '<div><div class="main-txt">' + escapeHtml(m.name) + '</div>' +
+          '<div class="sub-txt">⏰ ' + m.time + (m.taken ? " · 복용 완료" : " · 복용 전") + '</div></div>' +
+        '</div>'
+      );
+      var right = el('<div style="display:flex; gap:8px; align-items:center;"></div>');
+      var chk = el('<div class="check' + (m.taken ? " on" : "") + '">✓</div>');
+      chk.addEventListener("click", function () {
+        m.taken = !m.taken;
+        persist("medications");
+        renderAll();
+      });
+      var del = el('<button type="button" class="btn btn-ghost btn-sm">삭제</button>');
+      del.addEventListener("click", function () {
+        db.medications = db.medications.filter(function (x) { return x.id !== m.id; });
+        persist("medications");
+        renderAll();
+      });
+      right.appendChild(chk);
+      right.appendChild(del);
+      item.appendChild(right);
+      listCard.appendChild(item);
+    });
+    wrap.appendChild(listCard);
+    return wrap;
+  }
+
+  // ---------- 4. 응급 상황 연락 ----------
+  function viewSos() {
+    var wrap = el('<div></div>');
+    wrap.appendChild(el('<div class="card"><h2>응급 상황 연락</h2><p class="muted">위급할 때 아래 버튼을 눌러주세요.</p></div>'));
+
+    var sos119 = el(
+      '<a class="emergency-btn" href="tel:119"><span>🚑 119 전화하기</span><span class="sub">누르면 바로 119로 연결돼요</span></a>'
+    );
+    wrap.appendChild(sos119);
+
+    var g = db.guardian;
+    if (g && g.phone) {
+      wrap.appendChild(el(
+        '<a class="btn btn-danger btn-block" style="padding:20px;" href="tel:' + g.phone + '">📞 보호자(' + escapeHtml(g.name || "") + ') 전화하기</a>'
+      ));
+    } else {
+      var warn = el('<div class="card"><p class="muted">등록된 보호자가 없어요. [보호자] 탭에서 먼저 등록해주세요.</p></div>');
+      var goBtn = el('<button type="button" class="btn btn-outline btn-block">보호자 등록하러 가기</button>');
+      goBtn.addEventListener("click", function () { state.tab = "guardian"; renderAll(); });
+      warn.appendChild(goBtn);
+      wrap.appendChild(warn);
+    }
+    return wrap;
+  }
+
+  // ---------- 5. 건강 정보 관리 ----------
+  function viewRecords() {
+    var wrap = el('<div></div>');
+    wrap.appendChild(el('<div class="card"><h2>건강 정보 관리</h2><p class="muted">진료 기록과 복용 중인 약을 한곳에 모아두세요.</p></div>'));
+
+    var form = el('<div class="card"></div>');
+    var dateInp = el('<div class="field"><label>진료 날짜</label><input type="date" /></div>');
+    dateInp.querySelector("input").value = todayStr();
+    form.appendChild(dateInp);
+    var hospInp = el('<div class="field"><label>병원 이름</label><input type="text" placeholder="예: 서대전 내과의원" /></div>');
+    form.appendChild(hospInp);
+    var contentInp = el('<div class="field"><label>진료 내용</label><textarea rows="2" placeholder="예: 혈압 체크, 약 처방"></textarea></div>');
+    form.appendChild(contentInp);
+    var medInp = el('<div class="field"><label>복용 중인 약</label><input type="text" placeholder="예: 혈압약, 소화제" /></div>');
+    form.appendChild(medInp);
+
+    var saveBtn = el('<button type="button" class="btn btn-primary btn-block">기록 저장하기</button>');
+    saveBtn.addEventListener("click", function () {
+      var date = dateInp.querySelector("input").value;
+      var hospital = hospInp.querySelector("input").value.trim();
+      if (!date || !hospital) return;
+      db.records.push({
+        id: Date.now(),
+        date: date,
+        hospital: hospital,
+        content: contentInp.querySelector("textarea").value.trim(),
+        meds: medInp.querySelector("input").value.trim()
+      });
+      persist("records");
+      renderAll();
+    });
+    form.appendChild(saveBtn);
+    wrap.appendChild(form);
+
+    var listCard = el('<div class="card"><h2>저장된 기록</h2></div>');
+    var recs = db.records.slice().sort(function (a, b) { return b.date.localeCompare(a.date); });
+    if (recs.length === 0) {
+      listCard.appendChild(el('<div class="empty">아직 저장된 기록이 없어요.</div>'));
+    }
+    recs.forEach(function (r) {
+      var item = el(
+        '<div class="list-item" style="align-items:flex-start;">' +
+          '<div><div class="main-txt">' + r.date + ' · ' + escapeHtml(r.hospital) + '</div>' +
+          (r.content ? '<div class="sub-txt">' + escapeHtml(r.content) + '</div>' : '') +
+          (r.meds ? '<div class="sub-txt">💊 ' + escapeHtml(r.meds) + '</div>' : '') +
+          '</div>' +
+        '</div>'
+      );
+      var del = el('<button type="button" class="btn btn-ghost btn-sm">삭제</button>');
+      del.addEventListener("click", function () {
+        db.records = db.records.filter(function (x) { return x.id !== r.id; });
+        persist("records");
+        renderAll();
+      });
+      item.appendChild(del);
+      listCard.appendChild(item);
+    });
+    wrap.appendChild(listCard);
+    return wrap;
+  }
+
+  // ---------- 6. 보호자 연결 ----------
+  function viewGuardian() {
+    var wrap = el('<div></div>');
+    wrap.appendChild(el('<div class="card"><h2>보호자 연결</h2><p class="muted">보호자를 등록하면 예약 일정과 복약 여부를 함께 볼 수 있어요.</p></div>'));
+
+    var form = el('<div class="card"></div>');
+    var nameInp = el('<div class="field"><label>보호자 이름</label><input type="text" placeholder="예: 서한희" /></div>');
+    var phoneInp = el('<div class="field"><label>보호자 연락처</label><input type="tel" placeholder="예: 010-1234-5678" /></div>');
+    form.appendChild(nameInp);
+    form.appendChild(phoneInp);
+    if (db.guardian) {
+      nameInp.querySelector("input").value = db.guardian.name || "";
+      phoneInp.querySelector("input").value = db.guardian.phone || "";
+    }
+    var saveBtn = el('<button type="button" class="btn btn-primary btn-block">' + (db.guardian ? "보호자 정보 수정" : "보호자 등록하기") + '</button>');
+    saveBtn.addEventListener("click", function () {
+      var name = nameInp.querySelector("input").value.trim();
+      var phone = phoneInp.querySelector("input").value.trim();
+      if (!name || !phone) return;
+      db.guardian = { name: name, phone: phone };
+      persist("guardian");
+      renderAll();
+    });
+    form.appendChild(saveBtn);
+    wrap.appendChild(form);
+
+    if (db.guardian) {
+      var summary = el('<div class="card"><h2>보호자가 보는 화면</h2></div>');
+      summary.appendChild(el('<div class="banner">👤 ' + escapeHtml(db.guardian.name) + ' 님과 연결되어 있어요</div>'));
+
+      var nextRes = db.reservations.slice().sort(function (a, b) { return (a.date + a.time).localeCompare(b.date + b.time); })[0];
+      summary.appendChild(el(
+        '<div class="list-item"><div><div class="main-txt">다음 병원 예약</div><div class="sub-txt">' +
+        (nextRes ? nextRes.hospitalName + " · " + nextRes.date + " " + nextRes.time : "예정된 예약이 없어요") +
+        '</div></div></div>'
+      ));
+
+      var total = db.medications.length;
+      var takenCount = db.medications.filter(function (m) { return m.taken; }).length;
+      summary.appendChild(el(
+        '<div class="list-item"><div><div class="main-txt">오늘 복약 현황</div><div class="sub-txt">' +
+        (total === 0 ? "등록된 약이 없어요" : takenCount + " / " + total + "회 복용 완료") +
+        '</div></div></div>'
+      ));
+      wrap.appendChild(summary);
+    }
+    return wrap;
+  }
+
+  var VIEWS = {
+    find: viewFind, book: viewBook, meds: viewMeds,
+    sos: viewSos, records: viewRecords, guardian: viewGuardian
+  };
+
+  function renderAll() {
+    renderNav();
+    mainEl.innerHTML = "";
+    mainEl.appendChild(VIEWS[state.tab]());
+  }
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
